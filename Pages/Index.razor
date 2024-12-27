@@ -1,9 +1,43 @@
-﻿@page "/"
+@page "/"
+@using System.Collections.Generic
 
-<PageTitle>Index</PageTitle>
+<h3>ToDo List</h3>
 
-<h1>My Name is Manu Rajbhar</h1>
+<input @bind="newTodo" placeholder="Enter new todo" />
+<button @onclick="AddTodo">Add</button>
 
-Welcome to your new app.
+<ul>
+    @foreach (var todo in todos)
+    {
+        <li>
+            <input type="checkbox" @bind="todo.IsDone" />
+            @todo.Title
+            <button @onclick="() => RemoveTodo(todo)">Remove</button>
+        </li>
+    }
+</ul>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    private string newTodo;
+    private List<TodoItem> todos = new List<TodoItem>();
+
+    private void AddTodo()
+    {
+        if (!string.IsNullOrWhiteSpace(newTodo))
+        {
+            todos.Add(new TodoItem { Title = newTodo });
+            newTodo = string.Empty;
+        }
+    }
+
+    private void RemoveTodo(TodoItem todo)
+    {
+        todos.Remove(todo);
+    }
+
+    private class TodoItem
+    {
+        public string Title { get; set; }
+        public bool IsDone { get; set; }
+    }
+}
